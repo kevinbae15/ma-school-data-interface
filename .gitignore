@@ -1,0 +1,25 @@
+# Virtual Environment Stuff
+backend/dev
+
+# Node
+frontend/node_modules/
+frontend/package-lock.json
+npm-debug.log*
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.appname
+
+# www
+frontend/www/app*
+frontend/www/tp
+frontend/www/index.html
+
+# Docker 
+.appname
+.container.id
+.last_tag
