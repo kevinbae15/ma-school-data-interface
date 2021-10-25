@@ -4,6 +4,8 @@
 
 ## Setup (Backend)
 
+> Make sure you are in the `/backend` directory to run the backend server
+
 ### Setup virtual environment
 
 ```
@@ -140,12 +142,13 @@ npm install
 
 ## Start Server
 
-While in repository directory, start the server with: 
+> Make sure you are in the `/frontend` directory to run webpack
+
+Start the server with: 
 ```
 webpack-dev-server
 ```
 
-> Make sure you are in the `/frontend` directory to run webpack
 > You may need to install webpack-dev-server 
 
 ```
