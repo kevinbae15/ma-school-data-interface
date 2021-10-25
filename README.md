@@ -1,48 +1,179 @@
-# Paperless Parts Coding Challenge: Front-End
+# ma-school-data-interface
+> Full stack application that provides information on schools from MA
 
-This is an open-ended exercise aimed at assessing your technical skills with JavaScript frameworks (or your ability to learn new tools!).
 
-Your objective is to build a browser user interface that downloads a data package and renders it for a user. You may use the JavaScript framework of your choice, but we prefer solutions in [React](https://reactjs.org/). The solution will be evaluated based on user experience (UX), technical implementation, and completeness of the solution.
+## Setup (Backend)
 
-Aim to spend no more than 3-5 hours on your solution. We know that's not enough time for perfection, but we're interested in seeing how you prioritize.
+### Setup virtual environment
 
-## Project Objective
+```
+python3 -m venv dev
+. dev/bin/activate
+pip3 install -r requirements.txt
+```
 
-This repository contains data files derived from the US Department of Education [College Scorecard](https://collegescorecard.ed.gov/data/) public domain dataset. These files contain a list of colleges and universities in the state of Massachusetts, along with some basic information about these schools, and a list of a academic programs offered by each.
+### Start
 
-Create a browser-based user interface that displays this dataset in a convenient way for a user.
+```
+python3 manage.py runserver <port_number>
+```
 
-Consider implementing any of the following features that makes the interface pleasant to use:
+## Endpoints
+- GET  `/api/schools`
+- GET  `/api/schools/<school_id>`
 
-- A list/index view that shows many schools
-- Pagination or infinite scrolling
-- Sorting
-- A detail view that shows all information about a particular school
 
-### Data Description
+### GET `/api/schools`
 
-You will be working with three data files:
+Parameters (taken in by query string):
+```
+sort: keyword to sort by
+sortType: either 'asc' or 'desc'
+count: number of results to return
+page: return results from specific page number based on count
+```
 
-- `ma_schools.json` contains a list of schools in Massachusetts, where each school is defined by a dictionary.
-- `fields.csv` contains descriptions of each key in the school dictionaries.
-- `programs.json` contains a dictionary describing the abbreviations of the academic programs listed for each school in the `'PROGRAMS'` key.
+Success Response Example:
 
-### Extending Your Solution
+Request: `/api/schools?sort=INSTNM&sortType=asc&count=5&page=1`
 
-Too easy? You can extend your solution down the stack to demonstrate your technical breadth.
+```
+{
+    "status": "success",
+    "data": {
+        "schools": [
+            {
+                "UNITID": 135,
+                "INSTNM": "Worcester State University",
+                "ADM_RATE": "0.6857",
+                "SAT_AVG": "1020"
+            },
+            {
+                "UNITID": 134,
+                "INSTNM": "Worcester Polytechnic Institute",
+                "ADM_RATE": "0.4855",
+                "SAT_AVG": "NULL"
+            },
+            {
+                "UNITID": 133,
+                "INSTNM": "Williams College",
+                "ADM_RATE": "0.1761",
+                "SAT_AVG": "1442"
+            },
+            {
+                "UNITID": 80,
+                "INSTNM": "William James College",
+                "ADM_RATE": "NULL",
+                "SAT_AVG": "NULL"
+            },
+            {
+                "UNITID": 132,
+                "INSTNM": "Wheelock College",
+                "ADM_RATE": "0.9542",
+                "SAT_AVG": "944"
+            }
+        ],
+        "numberOfPages": 39
+    }
+}
+```
 
-Consider adding any of these features:
+> the endpoint returns number of pages to let frontend know how many pages to display
 
-- Front-End: Sort suppliers by proximity to the user. Come up with a solution for capturing the user's location and comparing it to each supplier's location.
-- Back-End: Rather than downloading static data documents, create a web service that provides the data. Use a relational database to store the search results and create queries to produce JSON serialization.
-- DevOps: Deploy your solution on the web or submit a containerized solution that we can run easily.
 
-## Submission Guidelines
+Fail Response Example:
 
-### Submitting to Paperless Parts
+```
+{
+    "status": "fail",
+    "errorMessage": "invalid sort by keyword"
+}
+```
 
-You may submit a solution using any convenient method, or as discussed in advance. We encourage you to use git for version control.
+### GET `/api/schools/<school_id>`
 
-### Documentation
+> The only parameter is the school_id, which is passed as a parameter in the url
 
-Please provide some documentation (for example, in a README text or Markdown file) that, at a minimum, provides instructions for running your application. Include any additional information you think we would need to review your solution. If there are features you would complete or add given more time, tell us about those, too!
+Success Response Example:
+
+Request: `/api/schools/12`
+
+```
+{
+    "status": "success",
+    "data": {
+        "CITY": "Longmeadow",
+        "STABBR": "MA",
+        "ADM_RATE": "0.7726",
+        "ZIP": "01106",
+        "HIGHDEG": "4",
+        "LOCALE": "21",
+        "PROGRAMS": [
+            "CIP22BACHL",
+            "CIP22CERT1",
+            "CIP22ASSOC",
+            "CIP13BACHL",
+            "CIP26BACHL",
+            "CIP30BACHL"
+        ],
+        "SAT_AVG": "NULL",
+        "LONGITUDE": "-72.583974",
+        "INSTNM": "Bay Path University",
+        "LATITUDE": "42.055364",
+        "CCSIZSET": "11",
+        "INSTURL": "www.baypath.edu",
+        "UNITID": 12
+    }
+}
+```
+
+
+## Setup (Frontend)
+
+### Installation 
+
+Install node packages while in the repository's directory
+
+```
+npm install  
+```
+
+## Start Server
+
+While in repository directory, start the server with: 
+```
+webpack-dev-server
+```
+
+> Make sure you are in the `/frontend` directory to run webpack
+> You may need to install webpack-dev-server 
+
+```
+npm i -g webpack-dev-server
+```
+
+## Features
+
+This app supports:
+ * sorting (both descending and ascending) and pagination by clicking on the headers
+ * pagination which allows users to digest the information easier
+ * a modal containing additional info about the school once its row is clicked
+
+Potential additional features/handling:
+ * Ease of School Search:
+   * Allow filtering:
+      * by school info (size, locale, etc)
+      * by scores (a range of SAT Scores and Acceptance Rates)
+      * by programs available
+   * Allow search by school
+   * Allow users to choose how many schools are shown on the table
+
+ * Better UI/UX 
+    * indiciation of sorting direction on table headers
+    * Better error handling on the frontend
+    * make school information on modal more digestable
+    * interface is black and white, could use more colors for better UX
+
+ * Optimizations
+    * Cache dataset to save time on redundant calls
+    * Store single school information on the frontend to prevent multiple calls to same school
