@@ -99,7 +99,7 @@ class SchoolTable extends Component {
                 return (
                   <tr className="schoolRow" key={school.UNITID} data-school-id={school.UNITID} onClick={() => this.showSchoolDetails(school.UNITID)}>
                     <th className="mdl-data-table__cell--non-numeric">{school.INSTNM}</th>
-                    <td>{school.ADM_RATE == "NULL" ? "N/A" : school.ADM_RATE}</td>
+                    <td>{school.ADM_RATE == "NULL" ? "N/A" : (school.ADM_RATE * 100).toFixed(2) + "%"}</td>
                     <td>{school.SAT_AVG == "NULL" ? "N/A" : school.SAT_AVG}</td>
                   </tr>
                 );
@@ -160,7 +160,7 @@ class SchoolModal extends Component {
                     <h5 className="mb-1">Stats</h5>
                   </div>
                   <div className="schoolInfo"><strong>SAT Average:</strong> {sData.SAT_AVG == "NULL" ? "N/A" : sData.SAT_AVG}</div>
-                  <div className="schoolInfo"><strong>Admission Rate:</strong> {sData.ADM_RATE == "NULL" ? "N/A" : sData.ADM_RATE}</div>
+                  <div className="schoolInfo"><strong>Admission Rate:</strong> {sData.ADM_RATE == "NULL" ? "N/A" : (sData.ADM_RATE * 100).toFixed(2) + "%"}</div>
                 </div>
                 <div className="list-group-item list-group-item-action flex-column align-items-start">
                   <div className="d-flex w-100 justify-content-between">
