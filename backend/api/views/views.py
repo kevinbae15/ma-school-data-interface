@@ -6,8 +6,6 @@ from django.db import transaction
 import json
 from rest_framework.views import Response
 import math
-
-
 import logging
 
 logger = logging.getLogger("ten.server")
@@ -44,15 +42,19 @@ class schools(generics.ListCreateAPIView):
         data = self.minSchoolData
         numberOfPages = None
 
-        if 'sort' in parametersObject:
-            if 'sortType' not in parametersObject:
-                data = self.sortSchoolDataByKey(data, parametersObject['sort'], "desc")
-            else:
-                data = self.sortSchoolDataByKey(data, parametersObject['sort'], parametersObject['sortType'])
+        try:
+            if 'sort' in parametersObject:
+                if 'sortType' not in parametersObject:
+                    data = self.sortSchoolDataByKey(data, parametersObject['sort'], "desc")
+                else:
+                    data = self.sortSchoolDataByKey(data, parametersObject['sort'], parametersObject['sortType'])
 
-        if 'page' in parametersObject and 'count' in parametersObject:
-            data, numberOfPages = self.returnSetOfSchools(data, int(parametersObject['page']), int(parametersObject['count']))
-
+            if 'page' in parametersObject and 'count' in parametersObject:
+                data, numberOfPages = self.returnSetOfSchools(data, int(parametersObject['page']), int(parametersObject['count']))
+        except ValueError as e:
+            return Response({"status": "fail", "errorMessage": str(e)}, status=400)
+        except Exception as e:
+            return Response({"status": "error", "errorMessage": "Something went wrong"}, status=500)
 
 
 
