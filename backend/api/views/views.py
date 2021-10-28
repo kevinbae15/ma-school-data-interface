@@ -43,6 +43,12 @@ class schools(generics.ListCreateAPIView):
         numberOfPages = None
 
         try:
+            if 'keyword' in parametersObject:
+                data = self.search(data, parametersObject['keyword'])
+        except Exception as e:
+            return Response({"status": "error", "errorMessage": "Something went wrong"}, status=500)
+
+        try:
             if 'sort' in parametersObject:
                 if 'sortType' not in parametersObject:
                     data = self.sortSchoolDataByKey(data, parametersObject['sort'], "desc")
@@ -51,6 +57,8 @@ class schools(generics.ListCreateAPIView):
 
             if 'page' in parametersObject and 'count' in parametersObject:
                 data, numberOfPages = self.returnSetOfSchools(data, int(parametersObject['page']), int(parametersObject['count']))
+
+
         except ValueError as e:
             return Response({"status": "fail", "errorMessage": str(e)}, status=400)
         except Exception as e:
@@ -93,6 +101,15 @@ class schools(generics.ListCreateAPIView):
             return sorted(schoolData, key = lambda x: float('-inf') if x[keyword] == "NULL" else float(x[keyword]), reverse = not reverse)
         else:
             return sorted(schoolData, key = lambda x: x[keyword], reverse = reverse)
+
+    def search(self, schoolData, keyword):
+        filteredResults = []
+
+        for school in schoolData:
+            if keyword in school['INSTNM'].lower():
+                filteredResults.append(school)
+
+        return filteredResults
 
 
 class singleSchool(schools):
